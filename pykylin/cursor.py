@@ -1,12 +1,12 @@
 from __future__ import absolute_import
 
 from dateutil import parser
-import re
+
 from .errors import Error
 from .log import logger
+import re
 
 class Cursor(object):
-
     def __init__(self, connection):
         self.connection = connection
         self._arraysize = 1
@@ -27,6 +27,7 @@ class Cursor(object):
         rx = re.compile('|'.join(map(re.escape,adict)))  
         def one_xlat(match):  
             return adict[match.group(0)]  
+        return rx.sub(one_xlat,text)
 
     def execute(self, operation, parameters={}, acceptPartial=True, limit=None, offset=0):
         keywordMap={' count ':' "count" '}
