@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 
 from dateutil import parser
-
+import re
 from .errors import Error
 from .log import logger
 
@@ -21,11 +21,21 @@ class Cursor(object):
 
     def close(self):
         logger.debug('Cursor close called')
+        
+    @staticmethod
+    def multiple_replace(text,adict):  
+        rx = re.compile('|'.join(map(re.escape,adict)))  
+        def one_xlat(match):  
+            return adict[match.group(0)]  
 
     def execute(self, operation, parameters={}, acceptPartial=True, limit=None, offset=0):
-        sql = operation % parameters
+        keywordMap={' count ':' "count" '}
+        if parameters:
+            sql = operation % parameters
+        else:
+            sql = operation
         data = {
-            'sql': sql,
+            'sql': self.multiple_replace(sql,keywordMap),
             'offset': offset,
             'limit': limit or self.connection.limit,
             'acceptPartial': acceptPartial,
