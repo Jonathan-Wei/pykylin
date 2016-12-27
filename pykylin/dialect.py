@@ -167,6 +167,9 @@ class KylinDialect(default.DefaultDialect):
             digit_size = column['decimal_DIGITS']
             args = (digit_size,)
             tpe = KYLIN_TYPE_MAP['DECIMAL']
+        elif tpe_NAME.startswith('TIMESTAMP'):
+            args = ()
+            tpe = KYLIN_TYPE_MAP['TIMESTAMP']
         else:
             args = ()
             tpe = KYLIN_TYPE_MAP[tpe_NAME]
